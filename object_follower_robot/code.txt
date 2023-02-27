@@ -1,0 +1,224 @@
+#define trigf 4
+#define echof 5
+#define trigr 6
+#define echor 7
+#define trigl 3
+#define echol 2
+
+#define rmotor1 8
+#define rmotor2 9
+#define rmotor 10
+
+#define lmotor1 12
+#define lmotor2 13
+#define lmotor 11
+
+
+
+void setup() {
+  pinMode(2, INPUT);
+  pinMode(3, OUTPUT);
+  pinMode(5, INPUT);
+  pinMode(4, OUTPUT);
+  pinMode(7, INPUT);
+  pinMode(6, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(12, OUTPUT);
+  pinMode(13, OUTPUT);
+  pinMode(A0, INPUT_PULLUP);
+  
+  
+  
+  Serial.begin(9600);
+  
+
+}
+
+void loop() {
+
+  int re = digitalRead(A0);
+
+
+  if(re==1){
+    manual();
+   
+  }
+
+  if(re==0){
+    autom();
+  }
+
+  
+
+  
+
+
+
+
+}
+
+void manual(){
+  if(Serial.available()){
+    char m = Serial.read();
+    
+    if(m=='U'){
+      forward(255);
+    }
+    if(m=='D'){
+      back(1);
+    }
+
+    if(m=='R'){
+      right();
+    }
+
+    if(m=='L'){
+      left();
+    }
+
+    if(m=='S'){
+      stp();
+    }
+  }
+  else {
+  stp()
+  }
+}
+
+void autom(){
+    int f = distance(trigf,echof);
+  int r = distance(trigr,echor);
+  int l = distance(trigl,echol);
+
+
+  int d = minDistance(f,r,l);
+
+    Serial.println(d);
+
+  if (d<70){
+
+    if(d==f){
+      if (d<20){
+        back(d);
+      }
+  
+      else if (d>23){
+        forward(d*4);
+      }
+  
+      else{
+        stp();
+      }
+    }
+  
+    else if(d==r){
+      right();
+    }
+  
+    else if(d==l){
+      left();
+    }
+
+  }
+
+  else{
+    stp();
+  }
+
+}
+
+
+
+
+
+int distance(int trig, int echo){
+  digitalWrite(trig, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+  long duration = pulseIn(echo,HIGH);
+
+
+
+  int dis = .0340*duration/2;
+  return dis;
+  
+}
+
+int minDistance(int a, int b, int c){
+  if (a<b && a<c){
+    return a;
+  }
+
+  if (b<a && b<c){
+    return b;
+  }
+
+  else{
+    return c;
+  }
+}
+
+void back(int spd){
+    spd = 20-spd;
+  spd *= 10;
+  if (spd < 66){ spd = 66;}
+  analogWrite(rmotor, spd);
+  digitalWrite(rmotor1, HIGH);
+  digitalWrite(rmotor2, LOW);
+  analogWrite(lmotor, spd);
+  digitalWrite(lmotor1, HIGH);
+  digitalWrite(lmotor2, LOW);
+  
+}
+
+void forward(int spd){
+
+  analogWrite(rmotor, spd);
+  digitalWrite(rmotor1, LOW);
+  digitalWrite(rmotor2, HIGH);
+  analogWrite(lmotor, spd);
+  digitalWrite(lmotor1, LOW);
+  digitalWrite(lmotor2, HIGH);
+  
+  
+}
+
+void left(){
+  analogWrite(rmotor, 120);
+  digitalWrite(rmotor1, HIGH);
+  digitalWrite(rmotor2, LOW);
+  analogWrite(lmotor, 120);
+  digitalWrite(lmotor1, LOW);
+  digitalWrite(lmotor2, HIGH);
+  
+}
+
+void right(){
+  analogWrite(rmotor, 120);
+  digitalWrite(rmotor1, LOW);
+  digitalWrite(rmotor2, HIGH);
+  analogWrite(lmotor, 120);
+  digitalWrite(lmotor1, HIGH);
+  digitalWrite(lmotor2, LOW);
+  
+}
+
+void stp(){
+  analogWrite(rmotor, 0);
+  digitalWrite(rmotor1, LOW);
+  digitalWrite(rmotor2, LOW);
+  analogWrite(lmotor, 0);
+  digitalWrite(lmotor1, LOW);
+  digitalWrite(lmotor2, LOW);
+  
+  
+}
+
+
+

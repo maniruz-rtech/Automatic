@@ -1,0 +1,217 @@
+#define trigf 4
+#define echof 5
+
+#define rmotor1 8
+#define rmotor2 9
+
+#define lmotor1 10
+#define lmotor2 11
+#define pwmr 12
+#define pwml 13
+
+void setup() {
+  pinMode(5, INPUT);
+  pinMode(4, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(12, OUTPUT);
+  pinMode(13, OUTPUT);
+  pinMode(A0, INPUT_PULLUP);
+  
+  
+  
+  Serial.begin(9600);
+  
+
+}
+
+void loop() {
+
+  int re = digitalRead(A0);
+
+
+  if(re==1){
+    manual();
+   
+  }
+
+  if(re==0){
+    autom();
+  }
+  
+}
+  void manual(){
+    if(Serial.available()){
+    char m = Serial.read();
+    
+    if(m=='U'){
+      forward(pwmr);
+      delay(3000);
+      botastp(pwmr);
+    }
+    if(m=='D'){
+      back(0);
+      delay(3000);
+      botastp(pwmr);
+    }
+
+    if(m=='R'){
+      right(pwmr);
+      delay(3000);
+      botastp(pwmr);
+    }
+
+    if(m=='L'){
+      left(pwmr);
+      delay(3000);
+      botastp(pwmr);
+    }
+
+    if(m=='S'){
+      stp();
+    }
+    
+  }
+  
+ 
+}
+void autom(){
+    int f = distance(trigf,echof);
+
+  int d;
+  d=f;
+  Serial.println(d);
+  if (d<100){
+
+    
+      if (d<36){
+        qbeback(d);
+      }
+  
+      else if (d>40){
+        abeforward(d*4);
+      }
+     }
+  
+      else{
+        stp();
+      }
+    }
+    
+  
+
+
+int distance(int trig, int echo){
+  digitalWrite(trig, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(8);
+  digitalWrite(trig, LOW);
+  long duration = pulseIn(echo,HIGH);
+
+
+
+  int dis = 0.340*duration/2;
+  return dis;
+  
+}
+void qbeback(int i){
+    i = 20 - i;
+    i*=10;
+  if (i < 66){ i = 66;}
+  analogWrite(pwmr, i);
+  digitalWrite(rmotor1, HIGH);
+  digitalWrite(rmotor2, LOW);
+  analogWrite(pwml, i);
+  digitalWrite(lmotor1, HIGH);
+  digitalWrite(lmotor2, LOW);
+ 
+  
+  
+}
+void abeforward(int i){
+  for(i=i;i<=255;i++){
+
+  analogWrite(pwmr, i);
+  digitalWrite(rmotor1, LOW);
+  digitalWrite(rmotor2, HIGH);
+  analogWrite(pwml, i);
+  digitalWrite(lmotor1, LOW);
+  digitalWrite(lmotor2, HIGH);
+ 
+}}
+void forward(int j){
+
+  digitalWrite(rmotor1, LOW);
+  digitalWrite(rmotor2, HIGH);
+  digitalWrite(lmotor1, LOW);
+  digitalWrite(lmotor2, HIGH);
+for (j=j; j <= 255; j++){
+  analogWrite(pwmr, j);
+  analogWrite(pwml, j);
+  delay(20);
+      }
+   }
+void back(int j){
+   digitalWrite(rmotor1, HIGH);
+  digitalWrite(rmotor2, LOW);
+  digitalWrite(lmotor1, HIGH);
+  digitalWrite(lmotor2, LOW);
+     for (j=j; j <= 255; j++){
+  analogWrite(pwmr, j);
+  analogWrite(pwml, j);
+  delay(20);
+      }
+      }
+  void right(int j){
+  digitalWrite(rmotor1, HIGH);
+  digitalWrite(rmotor2, LOW); 
+  digitalWrite(lmotor1, LOW);
+  digitalWrite(lmotor2, HIGH);
+     for (j=j; j <= 255; j++){
+  analogWrite(pwmr, j);
+  analogWrite(pwml, j);
+  delay(20);
+      }
+    }
+  void left(int j){
+   digitalWrite(rmotor1,LOW);
+  digitalWrite(rmotor2, HIGH);  
+  digitalWrite(lmotor1, HIGH);
+  digitalWrite(lmotor2, LOW);
+for (j=j; j <= 255; j++){
+  analogWrite(pwmr, j);
+  analogWrite(pwml, j);
+  delay(20);
+      }
+  }
+
+
+
+void stp(){
+  analogWrite(pwmr, 0);
+  digitalWrite(rmotor1, LOW);
+  digitalWrite(rmotor2, LOW);
+  analogWrite(pwml, 0);
+  digitalWrite(lmotor1, LOW);
+  digitalWrite(lmotor2, LOW);
+  
+  
+}
+void botastp(int i){
+  digitalWrite(rmotor1, LOW);
+  digitalWrite(rmotor2, LOW);
+  digitalWrite(lmotor1, LOW);
+  digitalWrite(lmotor2, LOW);
+  
+  for (int i = i; i >= 0; --i)
+  {
+    analogWrite(pwmr, i);
+    analogWrite(pwml, i);
+    delay(20);
+  } 
+}
+

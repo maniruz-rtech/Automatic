@@ -1,0 +1,31 @@
+instructions
+
+1. user name :pi
+2. Pass : mektek123
+.
+1. If Camera light off
+-> sudo service motion restart
+
+2. sever failed
+-> node-red(continue)
+
+3. parts list
+1. raspberry pi 3
+2. arduino uno
+3. camera
+4. sonar sensor
+5. li-po battery (1800 mah)
+6. motor driver(L298)
+7. Buck- Boots converter
+8. Geared Motor (12V, 300 rpm)
+
+Start :-
+server ip:1880/ui
+camer ip:8081
+
+
+Server json :-
+[{"id":"1c7a595f.72c017","type":"ui_template","z":"635dff9e.45137","group":"cc7995d8.b64e78","name":"template","order":1,"width":"6","height":"11","format":"\n    <p>streaming</p>\n    <iframe src=\"http://192.168.0.101:8081/\" height = \"480\" width = \"640\"></iframe>\n","storeOutMessages":true,"fwdInMessages":true,"templateScope":"local","x":860,"y":200,"wires":[[]]},{"id":"cc7995d8.b64e78","type":"ui_group","z":"","name":"Up-Down","tab":"c6d0c4d2.e8d208","order":2,"disp":true,"width":"6"},{"id":"c6d0c4d2.e8d208","type":"ui_tab","z":"","name":"key","icon":"dashboard"}]
+
+
+converter chip=fp5139
